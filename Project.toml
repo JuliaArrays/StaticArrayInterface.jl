@@ -1,5 +1,5 @@
 name = "StaticArrayInterface"
-uuid = "8e56abe8-95dc-4044-b214-a7de3332c128"
+uuid = "0d7ed370-da01-4f52-bd93-41d350b8b718"
 version = "1.0.0"
 
 [deps]
@@ -22,6 +22,10 @@ Static = "0.8"
 Requires = "1"
 julia = "1.6"
 
+[extensions]
+StaticArrayInterfaceOffsetArraysExt = "OffsetArrays"
+StaticArrayInterfaceStaticArraysExt = "StaticArrays"
+
 [extras]
 Pkg = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
 OffsetArrays = "6fe1bfb0-de20-5000-8ca7-80f57d26f881"
@@ -35,4 +39,3 @@ test = ["SafeTestsets", "Pkg", "Test", "OffsetArrays", "StaticArrays"]
 [weakdeps]
 OffsetArrays = "6fe1bfb0-de20-5000-8ca7-80f57d26f881"
 StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
-Static = "aedffcd0-7271-4cad-89d0-dc628f76c6d3"

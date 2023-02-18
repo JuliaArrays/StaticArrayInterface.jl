@@ -1,12 +1,11 @@
 module StaticArrayInterfaceOffsetArraysExt
 
-using ArrayInterface
+using StaticArrayInterface
+using Static
 if isdefined(Base, :get_extension) 
     using OffsetArrays
-    using Static
 else 
     using ..OffsetArrays
-    using ..Static
 end
 
 relative_offsets(r::OffsetArrays.IdOffsetRange) = (getfield(r, :offset),)
@@ -25,43 +24,43 @@ function relative_offsets(A::OffsetArrays.OffsetArray, dim::Int)
         return getfield(relative_offsets(A), dim)
     end
 end
-ArrayInterface.parent_type(::Type{<:OffsetArrays.OffsetArray{T,N,A}}) where {T,N,A} = A
+StaticArrayInterface.parent_type(::Type{<:OffsetArrays.OffsetArray{T,N,A}}) where {T,N,A} = A
 function _offset_axis_type(::Type{T}, dim::StaticInt{D}) where {T,D}
-    OffsetArrays.IdOffsetRange{Int,ArrayInterface.axes_types(T, dim)}
+    OffsetArrays.IdOffsetRange{Int,StaticArrayInterface.axes_types(T, dim)}
 end
-function ArrayInterface.axes_types(::Type{T}) where {T<:OffsetArrays.OffsetArray}
+function StaticArrayInterface.axes_types(::Type{T}) where {T<:OffsetArrays.OffsetArray}
     Static.eachop_tuple(
         _offset_axis_type,
         ntuple(static, StaticInt(ndims(T))),
-        ArrayInterface.parent_type(T)
+        StaticArrayInterface.parent_type(T)
     )
 end
-ArrayInterface.static_strides(A::OffsetArray) = ArrayInterface.static_strides(parent(A))
-function ArrayInterface.known_offsets(::Type{A}) where {A<:OffsetArrays.OffsetArray}
+StaticArrayInterface.static_strides(A::OffsetArray) = StaticArrayInterface.static_strides(parent(A))
+function StaticArrayInterface.known_offsets(::Type{A}) where {A<:OffsetArrays.OffsetArray}
     ntuple(identity -> nothing, Val(ndims(A)))
 end
-function ArrayInterface.offsets(A::OffsetArrays.OffsetArray)
-    map(+, ArrayInterface.offsets(parent(A)), relative_offsets(A))
+function StaticArrayInterface.offsets(A::OffsetArrays.OffsetArray)
+    map(+, StaticArrayInterface.offsets(parent(A)), relative_offsets(A))
 end
-@inline function ArrayInterface.offsets(A::OffsetArrays.OffsetArray, dim)
-    d = ArrayInterface.to_dims(A, dim)
-    ArrayInterface.offsets(parent(A), d) + relative_offsets(A, d)
+@inline function StaticArrayInterface.offsets(A::OffsetArrays.OffsetArray, dim)
+    d = StaticArrayInterface.to_dims(A, dim)
+    StaticArrayInterface.offsets(parent(A), d) + relative_offsets(A, d)
 end
-@inline function ArrayInterface.static_axes(A::OffsetArrays.OffsetArray)
-    map(OffsetArrays.IdOffsetRange, ArrayInterface.static_axes(parent(A)), relative_offsets(A))
+@inline function StaticArrayInterface.static_axes(A::OffsetArrays.OffsetArray)
+    map(OffsetArrays.IdOffsetRange, StaticArrayInterface.static_axes(parent(A)), relative_offsets(A))
 end
-@inline function ArrayInterface.static_axes(A::OffsetArrays.OffsetArray, dim)
-    d = ArrayInterface.to_dims(A, dim)
-    OffsetArrays.IdOffsetRange(ArrayInterface.static_axes(parent(A), d), relative_offsets(A, d))
+@inline function StaticArrayInterface.static_axes(A::OffsetArrays.OffsetArray, dim)
+    d = StaticArrayInterface.to_dims(A, dim)
+    OffsetArrays.IdOffsetRange(StaticArrayInterface.static_axes(parent(A), d), relative_offsets(A, d))
 end
-function ArrayInterface.stride_rank(T::Type{<:OffsetArray})
-  ArrayInterface.stride_rank(ArrayInterface.parent_type(T))
+function StaticArrayInterface.stride_rank(T::Type{<:OffsetArray})
+  StaticArrayInterface.stride_rank(StaticArrayInterface.parent_type(T))
 end
-function ArrayInterface.dense_dims(T::Type{<:OffsetArray})
-    ArrayInterface.dense_dims(ArrayInterface.parent_type(T))
+function StaticArrayInterface.dense_dims(T::Type{<:OffsetArray})
+    StaticArrayInterface.dense_dims(StaticArrayInterface.parent_type(T))
 end
-function ArrayInterface.contiguous_axis(T::Type{<:OffsetArray})
-  ArrayInterface.contiguous_axis(ArrayInterface.parent_type(T))
+function StaticArrayInterface.contiguous_axis(T::Type{<:OffsetArray})
+  StaticArrayInterface.contiguous_axis(StaticArrayInterface.parent_type(T))
 end
 
 end # module
