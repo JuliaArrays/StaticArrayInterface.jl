@@ -16,7 +16,7 @@ SuiteSparse = "4607b0f0-06f3-5cda-b6b1-a6196a1729e9"
 [compat]
 ArrayInterface = "7"
 Compat = "4"
-IfElse = "1"
+IfElse = "0.1"
 SnoopPrecompile = "1"
 Static = "0.8"
 Requires = "1"
