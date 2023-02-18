@@ -5,6 +5,7 @@ const GROUP = get(ENV, "GROUP", "All")
 @time begin
     if GROUP == "All" || GROUP == "Core"
         include("setup.jl")
+        include("known_values.jl")
         include("array_index.jl")
         include("axes.jl")
         include("broadcast.jl")

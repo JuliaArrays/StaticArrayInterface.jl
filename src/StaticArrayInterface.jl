@@ -8,9 +8,9 @@ import ArrayInterface: allowed_getindex, allowed_setindex!, aos_to_soa, buffer,
                            lu_instance,
                            safevec, zeromatrix, undefmatrix, ColoringAlgorithm,
                            fast_scalar_indexing, parameterless_type,
-                           ndims_index, ndims_shape, is_splat_index, is_forwarding_wrapper,
-                           IndicesInfo, childdims,
-                           parentdims, map_tuple_type, flatten_tuples, GetIndex, SetIndex!,
+                           is_forwarding_wrapper,
+                           childdims,
+                           map_tuple_type, flatten_tuples, GetIndex, SetIndex!,
                            defines_strides,
                            stride_preserving_index
 
@@ -24,8 +24,6 @@ import ArrayInterface: MatAdjTrans, VecAdjTrans, UpTri, LoTri
 # device pieces
 import ArrayInterface: AbstractDevice, AbstractCPU, CPUPointer, CPUTuple, CheckParent,
                            CPUIndex, GPU, can_avx, device
-
-import ArrayInterface: known_first, known_step, known_last
 
 using Static
 using Static: Zero, One, nstatic, eq, ne, gt, ge, lt, le, eachop, eachop_tuple,
@@ -44,80 +42,6 @@ using Base.Iterators: Pairs
 using LinearAlgebra
 
 import Compat
-
-"""
-    known_first(::Type{T}) -> Union{Int,Nothing}
-
-If `first` of an instance of type `T` is known at compile time, return it.
-Otherwise, return `nothing`.
-
-```julia
-julia> ArrayInterface.known_first(typeof(1:4))
-nothing
-
-julia> ArrayInterface.known_first(typeof(Base.OneTo(4)))
-1
-```
-"""
-known_first(x) = known_first(typeof(x))
-known_first(T::Type) = is_forwarding_wrapper(T) ? known_first(parent_type(T)) : nothing
-known_first(::Type{<:Base.OneTo}) = 1
-known_first(@nospecialize T::Type{<:LinearIndices}) = 1
-known_first(@nospecialize T::Type{<:Base.IdentityUnitRange}) = known_first(parent_type(T))
-function known_first(::Type{<:CartesianIndices{N, R}}) where {N, R}
-    _cartesian_index(ntuple(i -> known_first(R.parameters[i]), Val(N)))
-end
-
-"""
-    known_last(::Type{T}) -> Union{Int,Nothing}
-
-If `last` of an instance of type `T` is known at compile time, return it.
-Otherwise, return `nothing`.
-
-```julia
-julia> ArrayInterface.known_last(typeof(1:4))
-nothing
-
-julia> ArrayInterface.known_first(typeof(static(1):static(4)))
-4
-
-```
-"""
-known_last(x) = known_last(typeof(x))
-known_last(T::Type) = is_forwarding_wrapper(T) ? known_last(parent_type(T)) : nothing
-function known_last(::Type{<:CartesianIndices{N, R}}) where {N, R}
-    _cartesian_index(ntuple(i -> known_last(R.parameters[i]), Val(N)))
-end
-
-"""
-    known_step(::Type{T}) -> Union{Int,Nothing}
-
-If `step` of an instance of type `T` is known at compile time, return it.
-Otherwise, return `nothing`.
-
-```julia
-julia> ArrayInterface.known_step(typeof(1:2:8))
-nothing
-
-julia> ArrayInterface.known_step(typeof(1:4))
-1
-
-```
-"""
-known_step(x) = known_step(typeof(x))
-known_step(T::Type) = is_forwarding_wrapper(T) ? known_step(parent_type(T)) : nothing
-known_step(@nospecialize T::Type{<:AbstractUnitRange}) = 1
-
-"""
-    is_splat_index(::Type{T}) -> Bool
-
-Returns `static(true)` if `T` is a type that splats across multiple dimensions.
-"""
-is_splat_index(T::Type) = false
-is_splat_index(@nospecialize(x)) = is_splat_index(typeof(x))
-
-_add1(@nospecialize x) = x + oneunit(x)
-_sub1(@nospecialize x) = x - oneunit(x)
 
 @generated function merge_tuple_type(::Type{X}, ::Type{Y}) where {X <: Tuple, Y <: Tuple}
     Tuple{X.parameters..., Y.parameters...}
@@ -338,14 +262,18 @@ include("indexing.jl")
 include("stridelayout.jl")
 include("broadcast.jl")
 
+
+## Precompilation
+
 using SnoopPrecompile
 @precompile_setup begin
     # Putting some things in `setup` can reduce the size of the
     # precompile file and potentially make loading faster.
     arrays = [rand(4), Base.oneto(5)]
     @precompile_all_calls begin for x in arrays
-        known_size(x)
-        known_length(x)
+        known_first(x)
+        known_step(x)
+        known_last(x)
     end end
 end
 
