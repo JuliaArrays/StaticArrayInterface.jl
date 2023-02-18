@@ -1,6 +1,6 @@
 
 """
-    ArrayInterface.static_to_indices(A, I::Tuple) -> Tuple
+    static_to_indices(A, I::Tuple) -> Tuple
 
 Converts the tuple of indexing arguments, `I`, into an appropriate form for indexing into `A`.
 Typically, each index should be an `Int`, `StaticInt`, a collection with values of `Int`, or a collection with values of `CartesianIndex`
@@ -29,14 +29,14 @@ This implementation differs from that of `Base.to_indices` in the following ways
     1.105 μs (12 allocations: 672 bytes)
     (1, 1, 2, 1, 1, 2, 1, 1, 2, 1)
 
-    julia> @btime ArrayInterface.static_to_indices(\$x, \$inds2)
+    julia> @btime static_to_indices(\$x, \$inds2)
     0.041 ns (0 allocations: 0 bytes)
     (1, 1, 2, 1, 1, 2, 1, 1, 2, 1)
 
     julia> @btime Base.to_indices(\$x, \$inds3);
     340.629 ns (14 allocations: 768 bytes)
 
-    julia> @btime ArrayInterface.static_to_indices(\$x, \$inds3);
+    julia> @btime static_to_indices(\$x, \$inds3);
     11.614 ns (0 allocations: 0 bytes)
 
     ```
@@ -80,30 +80,30 @@ end
 end
 
 """
-    ArrayInterface.to_index([::IndexStyle, ]axis, arg) -> index
+    to_index([::IndexStyle, ]axis, arg) -> index
 
-Convert the argument `arg` that was originally passed to `ArrayInterface.static_getindex` for the
+Convert the argument `arg` that was originally passed to `static_getindex` for the
 dimension corresponding to `axis` into a form for native indexing (`Int`, Vector{Int}, etc.).
 
-`ArrayInterface.to_index` supports passing a function as an index. This function-index is
+`to_index` supports passing a function as an index. This function-index is
 transformed into a proper index.
 
 ```julia
 julia> using ArrayInterface, Static
 
-julia> ArrayInterface.to_index(static(1):static(10), 5)
+julia> to_index(static(1):static(10), 5)
 5
 
-julia> ArrayInterface.to_index(static(1):static(10), <(5))
+julia> to_index(static(1):static(10), <(5))
 static(1):4
 
-julia> ArrayInterface.to_index(static(1):static(10), <=(5))
+julia> to_index(static(1):static(10), <=(5))
 static(1):5
 
-julia> ArrayInterface.to_index(static(1):static(10), >(5))
+julia> to_index(static(1):static(10), >(5))
 6:static(10)
 
-julia> ArrayInterface.to_index(static(1):static(10), >=(5))
+julia> to_index(static(1):static(10), >=(5))
 5:static(10)
 
 ```
@@ -111,10 +111,10 @@ julia> ArrayInterface.to_index(static(1):static(10), >=(5))
 Use of a function-index helps ensure that indices are inbounds
 
 ```julia
-julia> ArrayInterface.to_index(static(1):static(10), <(12))
+julia> to_index(static(1):static(10), <(12))
 static(1):10
 
-julia> ArrayInterface.to_index(static(1):static(10), >(-1))
+julia> to_index(static(1):static(10), >(-1))
 1:static(10)
 ```
 
@@ -259,10 +259,10 @@ end
 to_axis(S::IndexLinear, axis, inds) = StaticInt(1):static_length(inds)
 
 """
-    ArrayInterface.static_getindex(A, args...)
+    static_getindex(A, args...)
 
 Retrieve the value(s) stored at the given key or index within a collection. Creating
-another instance of `ArrayInterface.static_getindex` should only be done by overloading `A`.
+another instance of `static_getindex` should only be done by overloading `A`.
 Changing indexing based on a given argument from `args` should be done through,
 [`to_index`](@ref), or [`to_axis`](@ref).
 """
@@ -380,7 +380,7 @@ _known_first_isone(ind) = known_first(ind) !== nothing && isone(known_first(ind)
 end
 
 """
-    ArrayInterface.setindex!(A, args...)
+    setindex!(A, args...)
 
 Store the given values at the given key or index within a collection.
 """
@@ -446,10 +446,10 @@ If `first` of an instance of type `T` is known at compile time, return it.
 Otherwise, return `nothing`.
 
 ```julia
-julia> ArrayInterface.known_first(typeof(1:4))
+julia> known_first(typeof(1:4))
 nothing
 
-julia> ArrayInterface.known_first(typeof(Base.OneTo(4)))
+julia> known_first(typeof(Base.OneTo(4)))
 1
 ```
 """
@@ -469,10 +469,10 @@ If `last` of an instance of type `T` is known at compile time, return it.
 Otherwise, return `nothing`.
 
 ```julia
-julia> ArrayInterface.known_last(typeof(1:4))
+julia> known_last(typeof(1:4))
 nothing
 
-julia> ArrayInterface.known_first(typeof(static(1):static(4)))
+julia> known_first(typeof(static(1):static(4)))
 4
 
 ```
@@ -490,10 +490,10 @@ If `step` of an instance of type `T` is known at compile time, return it.
 Otherwise, return `nothing`.
 
 ```julia
-julia> StaticArrayInterface.known_step(typeof(1:2:8))
+julia> known_step(typeof(1:2:8))
 nothing
 
-julia> StaticArrayInterface.known_step(typeof(1:4))
+julia> known_step(typeof(1:4))
 1
 
 ```

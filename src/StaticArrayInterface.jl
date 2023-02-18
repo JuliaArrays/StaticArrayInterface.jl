@@ -47,11 +47,11 @@ import Compat
     Tuple{X.parameters..., Y.parameters...}
 end
 
-Base.size(A::AbstractArray2) = map(Int, ArrayInterface.static_size(A))
-Base.size(A::AbstractArray2, dim) = Int(ArrayInterface.static_size(A, dim))
+Base.size(A::AbstractArray2) = map(Int, static_size(A))
+Base.size(A::AbstractArray2, dim) = Int(static_size(A, dim))
 
 function Base.axes(A::AbstractArray2)
-    is_forwarding_wrapper(A) && return ArrayInterface.static_axes(parent(A))
+    is_forwarding_wrapper(A) && return static_axes(parent(A))
     throw(ArgumentError("Subtypes of `AbstractArray2` must define an axes method"))
 end
 function Base.axes(A::AbstractArray2, dim::Union{Symbol, StaticSymbol})
@@ -59,10 +59,10 @@ function Base.axes(A::AbstractArray2, dim::Union{Symbol, StaticSymbol})
 end
 
 function Base.strides(A::AbstractArray2)
-    defines_strides(A) && return map(Int, ArrayInterface.static_strides(A))
+    defines_strides(A) && return map(Int, static_strides(A))
     throw(MethodError(Base.strides, (A,)))
 end
-Base.strides(A::AbstractArray2, dim) = Int(ArrayInterface.static_strides(A, dim))
+Base.strides(A::AbstractArray2, dim) = Int(static_strides(A, dim))
 
 function Base.IndexStyle(::Type{T}) where {T <: AbstractArray2}
     is_forwarding_wrapper(T) ? IndexStyle(parent_type(T)) : IndexCartesian()
@@ -121,14 +121,14 @@ Examples
      1 - 1im
      1 + 1im
 
-    julia> ArrayInterface.is_lazy_conjugate(a)
+    julia> is_lazy_conjugate(a)
     True()
 
     julia> b = a'
     1×2 adjoint(transpose(adjoint(::Vector{Complex{Int64}}))) with eltype Complex{Int64}:
      1+1im  1-1im
 
-    julia> ArrayInterface.is_lazy_conjugate(b)
+    julia> is_lazy_conjugate(b)
     False()
 
 """

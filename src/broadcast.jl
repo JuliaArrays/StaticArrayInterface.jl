@@ -11,9 +11,9 @@ to both `x` and `y` unless one has a length of `1`, in which case the longest ax
 equal to the output.
 
 ```julia
-julia> ArrayInterface.broadcast_axis(1:10, 1:10)
+julia> broadcast_axis(1:10, 1:10)
 
-julia> ArrayInterface.broadcast_axis(1:10, 1)
+julia> broadcast_axis(1:10, 1)
 1:10
 
 ```

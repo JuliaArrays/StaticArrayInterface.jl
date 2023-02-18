@@ -102,8 +102,8 @@ end
     static_axes(A, dim) -> AbstractUnitRange{Int}
 
 Returns the axis associated with each dimension of `A` or dimension `dim`.
-`ArrayInterface.static_axes(::AbstractArray)` behaves nearly identical to `Base.axes` with the
-exception of a handful of types replace `Base.OneTo{Int}` with `ArrayInterface.SOneTo`. For
+`static_axes(::AbstractArray)` behaves nearly identical to `Base.axes` with the
+exception of a handful of types replace `Base.OneTo{Int}` with `SOneTo`. For
 example, the axis along the first dimension of `Transpose{T,<:AbstractVector{T}}` and
 `Adjoint{T,<:AbstractVector{T}}` can be represented by `SOneTo(1)`. Similarly,
 `Base.ReinterpretArray`'s first axis may be statically sized.
@@ -173,20 +173,20 @@ Base.IndexStyle(T::Type{<:LazyAxis}) = IndexStyle(parent_type(T))
 function Static.OptionallyStaticUnitRange(x::LazyAxis)
     OptionallyStaticUnitRange(static_first(x), static_last(x))
 end
-ArrayInterface.can_change_size(@nospecialize T::Type{<:LazyAxis}) = can_change_size(fieldtype(T, :parent))
+can_change_size(@nospecialize T::Type{<:LazyAxis}) = can_change_size(fieldtype(T, :parent))
 
-ArrayInterface.known_first(::Type{<:LazyAxis{N,P}}) where {N,P} = known_offsets(P, static(N))
-ArrayInterface.known_first(::Type{<:LazyAxis{:,P}}) where {P} = 1
+known_first(::Type{<:LazyAxis{N,P}}) where {N,P} = known_offsets(P, static(N))
+known_first(::Type{<:LazyAxis{:,P}}) where {P} = 1
 @inline function Base.first(x::LazyAxis{N})::Int where {N}
-    if ArrayInterface.known_first(x) === nothing
+    if known_first(x) === nothing
         return Int(offsets(getfield(x, :parent), StaticInt(N)))
     else
         return Int(known_first(x))
     end
 end
 @inline Base.first(x::LazyAxis{:})::Int = Int(offset1(getfield(x, :parent)))
-ArrayInterface.known_last(::Type{LazyAxis{N,P}}) where {N,P} = known_last(axes_types(P, static(N)))
-ArrayInterface.known_last(::Type{LazyAxis{:,P}}) where {P} = known_length(P)
+known_last(::Type{LazyAxis{N,P}}) where {N,P} = known_last(axes_types(P, static(N)))
+known_last(::Type{LazyAxis{:,P}}) where {P} = known_length(P)
 Base.last(x::LazyAxis) = _last(known_last(x), x)
 _last(::Nothing, x::LazyAxis{:}) = lastindex(getfield(x, :parent))
 _last(::Nothing, x::LazyAxis{N}) where {N} = lastindex(getfield(x, :parent), N)

@@ -1,11 +1,11 @@
 
-ArrayInterface.known_first(::Type{<:OptionallyStaticUnitRange{StaticInt{F}}}) where {F} = F::Int
-ArrayInterface.known_first(::Type{<:OptionallyStaticStepRange{StaticInt{F}}}) where {F} = F::Int
+known_first(::Type{<:OptionallyStaticUnitRange{StaticInt{F}}}) where {F} = F::Int
+known_first(::Type{<:OptionallyStaticStepRange{StaticInt{F}}}) where {F} = F::Int
 
-ArrayInterface.known_step(::Type{<:OptionallyStaticStepRange{<:Any,StaticInt{S}}}) where {S} = S::Int
+known_step(::Type{<:OptionallyStaticStepRange{<:Any,StaticInt{S}}}) where {S} = S::Int
 
-ArrayInterface.known_last(::Type{<:OptionallyStaticUnitRange{<:Any,StaticInt{L}}}) where {L} = L::Int
-ArrayInterface.known_last(::Type{<:OptionallyStaticStepRange{<:Any,<:Any,StaticInt{L}}}) where {L} = L::Int
+known_last(::Type{<:OptionallyStaticUnitRange{<:Any,StaticInt{L}}}) where {L} = L::Int
+known_last(::Type{<:OptionallyStaticStepRange{<:Any,<:Any,StaticInt{L}}}) where {L} = L::Int
 
 """
     indices(x, dim) -> AbstractUnitRange{Int}

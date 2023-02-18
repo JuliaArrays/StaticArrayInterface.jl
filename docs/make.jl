@@ -1,20 +1,11 @@
-using ArrayInterface
-using Pkg
-
-function dev_subpkg(subpkg)
-    subpkg_path = joinpath(dirname(@__DIR__), "lib", subpkg)
-    Pkg.develop(PackageSpec(path=subpkg_path))
-end
-dev_subpkg("ArrayInterfaceCore")
-
-using ArrayInterfaceCore
+using StaticArrayInterface
 using Documenter
 
 makedocs(;
-    modules=[ArrayInterface, ArrayInterfaceCore],
-    sitename="ArrayInterface",
+    modules=[StaticArrayInterface],
+    sitename="StaticArrayInterface.jl",
     pages=[
-        "Home" => "index.md",
+        "StaticArrayInterface.jl: Static Compile-Time Enforced Array Interface Functionality" => "index.md",
         "API" => "api.md"
     ]
 )

@@ -5,14 +5,14 @@
 
 Returns the size of each dimension of `A` or along dimension `dim` of `A`. If the size of
 any axes are known at compile time, these should be returned as `Static` numbers. Otherwise,
-`ArrayInterface.static_size(A)` is identical to `Base.size(A)`
+`static_size(A)` is identical to `Base.size(A)`
 
 ```julia
 julia> using StaticArrays, ArrayInterface
 
 julia> A = @SMatrix rand(3,4);
 
-julia> ArrayInterface.static_size(A)
+julia> static_size(A)
 (static(3), static(4))
 ```
 """
@@ -188,7 +188,7 @@ known_size(T::Type, dim::IntType) = ndims(T) < dim ? 1 : known_size(T)[dim]
     static_length(A) -> Union{Int,StaticInt}
 
 Returns the length of `A`.  If the length is known at compile time, it is
-returned as `Static` number.  Otherwise, `ArrayInterface.static_length(A)` is identical
+returned as `Static` number.  Otherwise, `static_length(A)` is identical
 to `Base.length(A)`.
 
 ```julia
@@ -196,7 +196,7 @@ julia> using StaticArrays, ArrayInterface
 
 julia> A = @SMatrix rand(3,4);
 
-julia> ArrayInterface.static_length(A)
+julia> static_length(A)
 static(12)
 ```
 """

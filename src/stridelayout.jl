@@ -485,7 +485,7 @@ these should be returned as `Static` numbers. For example:
 ```julia
 julia> A = rand(3,4);
 
-julia> ArrayInterface.static_strides(A)
+julia> static_strides(A)
 (static(1), 3)
 ```
 
@@ -494,7 +494,7 @@ Additionally, the behavior differs from `Base.strides` for adjoint vectors:
 ```julia
 julia> x = rand(5);
 
-julia> ArrayInterface.static_strides(x')
+julia> static_strides(x')
 (static(1), static(1))
 ```
 
@@ -519,7 +519,7 @@ _is_column_dense(::A) where {A<:AbstractArray} =
     defines_strides(A) &&
     (ndims(A) == 0 || Bool(is_dense(A)) && Bool(is_column_major(A)))
 
-# Fixes the example of https://github.com/JuliaArrays/ArrayInterface.jl/issues/160
+# Fixes the example of https://github.com/JuliaArrays/jl/issues/160
 function static_strides(A::ReshapedArray)
     if _is_column_dense(parent(A))
         return size_to_strides(static_size(A), One())
