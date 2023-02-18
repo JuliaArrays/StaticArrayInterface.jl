@@ -3,7 +3,6 @@
 [![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://juliaarrays.github.io/StaticArrayInterface.jl/stable)
 [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://juliaarrays.github.io/StaticArrayInterface.jl/dev)
 [![CI](https://github.com/JuliaArrays/StaticArrayInterface.jl/workflows/CI/badge.svg)](https://github.com/JuliaArrays/StaticArrayInterface.jl/actions?query=workflow%3ACI)
-[![CI (Julia nightly)](https://github.com/JuliaArrays/StaticArrayInterface.jl/workflows/CI%20(Julia%20nightly)/badge.svg)](https://github.com/JuliaArrays/StaticArrayInterface.jl/actions?query=workflow%3A%22CI+%28Julia+nightly%29%22)
 [![Build status](https://badge.buildkite.com/a2db252d92478e1d7196ee7454004efdfb6ab59496cbac91a2.svg?branch=master)](https://buildkite.com/julialang/StaticArrayInterface-dot-jl)
 [![codecov](https://codecov.io/gh/JuliaArrays/StaticArrayInterface.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/JuliaArrays/StaticArrayInterface.jl)
 
