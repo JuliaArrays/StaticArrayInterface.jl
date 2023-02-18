@@ -1,0 +1,35 @@
+name = "StaticArrayInterface"
+uuid = "8e56abe8-95dc-4044-b214-a7de3332c128"
+version = "1.0.0"
+
+[deps]
+ArrayInterface = "4fba245c-0d91-5ea0-9b3e-6abc04ee57a9"
+Compat = "34da2185-b29b-5c13-b0c7-acf172513d20"
+IfElse = "615f187c-cbe4-4ef1-ba3b-2fcf58d6d173"
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+Requires = "ae029012-a4dd-5104-9daa-d747884805df"
+SnoopPrecompile = "66db9d55-30c0-4569-8b51-7e840670fc0c"
+SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
+Static = "aedffcd0-7271-4cad-89d0-dc628f76c6d3"
+SuiteSparse = "4607b0f0-06f3-5cda-b6b1-a6196a1729e9"
+
+[compat]
+Compat = "4"
+SnoopPrecompile = "1"
+Requires = "1"
+julia = "1.6"
+
+[extras]
+Pkg = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
+OffsetArrays = "6fe1bfb0-de20-5000-8ca7-80f57d26f881"
+SafeTestsets = "1bc83da4-3b8d-516f-aca4-4fe02f6d838f"
+StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["SafeTestsets", "Pkg", "Test", "OffsetArrays", "StaticArrays"]
+
+[weakdeps]
+OffsetArrays = "6fe1bfb0-de20-5000-8ca7-80f57d26f881"
+StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
+Static = "aedffcd0-7271-4cad-89d0-dc628f76c6d3"
