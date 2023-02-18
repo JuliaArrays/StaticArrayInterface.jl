@@ -17,6 +17,14 @@ Functions like `known_length` return values using [Static.jl](https://github.com
 which encode all of the information at the type level, which in turn forces the
 computation to occur at compile time.
 
+## Is This Library About StaticArrays?
+
+No, not necessarily. StaticArrays.jl is one library about array types which have static compile
+time information. However, there are many other array types with static compile time information.
+The purpose of this library is to be able to write code generic to all of those libraries
+which also keep this property of enforcing the computation is at compile time by using
+the type space.
+
 ## Warning: Compile Times
 
 Because this library enforces things be done at compile time by encoding everything
