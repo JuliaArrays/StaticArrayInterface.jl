@@ -95,14 +95,15 @@ An abstract trait that is used to determine how axes are combined when calling `
 """
 abstract type BroadcastAxis end
 
-@assume_effects :total function _find_first_true(isi::Tuple{Vararg{Bool, N}}) where {N}
+@assume_effects :total function _find_first_true(isi::Tuple{Vararg{Union{Bool, Static.StaticBool}, N}}) where {N}
     for i in 1:N
-        getfield(isi, i) && return i
+        x = getfield(isi, i) 
+        if (x isa Bool && x === true) || x isa Static.True
+            return i
+        end
     end
     return nothing
 end
-
-_find_first_true(::Tuple{Static.True, Bool}) = 1
 
 """
     IndicesInfo{N}(inds::Tuple) -> IndicesInfo{N}(typeof(inds))
@@ -218,11 +219,12 @@ struct IndicesInfo{Np, pdims, cdims, Nc}
     IndicesInfo(x::SubArray) = IndicesInfo{ndims(parent(x))}(typeof(x.indices))
 end
 
-@inline function _map_splats(nsplat::Int, splat_index::Int, dims::Tuple{Vararg{Int}})
+@inline function _map_splats(nsplat::Int, splat_index::Int, dims::Tuple{Vararg{Union{Int,StaticInt}}})
     ntuple(length(dims)) do i
         i === splat_index ? (nsplat * getfield(dims, i)) : getfield(dims, i)
     end
 end
+
 @inline function _accum_dims(csdims::NTuple{N, Int}, nd::NTuple{N, Int}) where {N}
     ntuple(N) do i
         nd_i = getfield(nd, i)
