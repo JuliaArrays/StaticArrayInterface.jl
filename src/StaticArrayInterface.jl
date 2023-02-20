@@ -102,6 +102,8 @@ abstract type BroadcastAxis end
     return nothing
 end
 
+_find_first_true(::Tuple{Static.True, Bool}) = 1
+
 """
     IndicesInfo{N}(inds::Tuple) -> IndicesInfo{N}(typeof(inds))
     IndicesInfo{N}(T::Type{<:Tuple}) -> IndicesInfo{N,pdims,cdims}()
