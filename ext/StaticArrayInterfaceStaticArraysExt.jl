@@ -1,14 +1,15 @@
 module StaticArrayInterfaceStaticArraysExt
 
 using StaticArrayInterface
-using LinearAlgebra
-using Static
+using StaticArrayInterface.Static
 using Static: StaticInt
 
 if isdefined(Base, :get_extension) 
     using StaticArrays
+    using LinearAlgebra
 else 
     using ..StaticArrays
+    using ..LinearAlgebra
 end
 
 const CanonicalInt = Union{Int,StaticInt}
