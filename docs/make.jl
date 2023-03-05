@@ -11,5 +11,5 @@ makedocs(;
 )
 
 deploydocs(;
-    repo="github.com/JuliaArrays/ArrayInterface.jl"
+    repo="github.com/JuliaArrays/StaticArrayInterface.jl"
 )
