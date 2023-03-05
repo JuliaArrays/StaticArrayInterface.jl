@@ -1,7 +1,8 @@
 module StaticArrayInterfaceOffsetArraysExt
 
 using StaticArrayInterface
-using Static
+using StaticArrayInterface.Static
+
 if isdefined(Base, :get_extension) 
     using OffsetArrays
 else 
