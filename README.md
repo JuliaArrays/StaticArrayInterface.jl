@@ -1,7 +1,6 @@
 # StaticArrayInterface.jl
 
-[![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://juliaarrays.github.io/StaticArrayInterface.jl/stable)
-[![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://juliaarrays.github.io/StaticArrayInterface.jl/dev)
+[![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://docs.sciml.ai/StaticArrayInterface/stable/)
 [![CI](https://github.com/JuliaArrays/StaticArrayInterface.jl/workflows/CI/badge.svg)](https://github.com/JuliaArrays/StaticArrayInterface.jl/actions?query=workflow%3ACI)
 [![Build status](https://badge.buildkite.com/a2db252d92478e1d7196ee7454004efdfb6ab59496cbac91a2.svg?branch=master)](https://buildkite.com/julialang/StaticArrayInterface-dot-jl)
 [![codecov](https://codecov.io/gh/JuliaArrays/StaticArrayInterface.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/JuliaArrays/StaticArrayInterface.jl)
