@@ -32,9 +32,9 @@ function _permdims(::Type{<:PermutedDimsArray{<:Any,<:Any,I1,I2}}) where {I1,I2}
     (map(static, I1), map(static, I2))
 end
 
-# Base will sometomes demote statically known slices in `SubArray` to `OneTo{Int}` so we
+# Base will sometimes demote statically known slices in `SubArray` to `OneTo{Int}` so we
 # provide the parent mapping to check for static size info
-function sub_axes_map(@nospecialize(T::Type{<:SubArray}))
+@inline function sub_axes_map(@nospecialize(T::Type{<:SubArray}))
     map(Base.Fix1(_sub_axis_map, T), map_indices_info(IndicesInfo(T)))
 end
 function _sub_axis_map(@nospecialize(T::Type{<:SubArray}), x::Tuple{StaticInt{index},Any,Any}) where {index}
