@@ -492,12 +492,12 @@ end
 
 ## Precompilation
 
-using SnoopPrecompile
-@precompile_setup begin
+using PrecompileTools
+@setup_workload begin
     # Putting some things in `setup` can reduce the size of the
     # precompile file and potentially make loading faster.
     arrays = [rand(4), Base.oneto(5)]
-    @precompile_all_calls begin for x in arrays
+    @compile_workload begin for x in arrays
         known_first(x)
         known_step(x)
         known_last(x)
