@@ -14,47 +14,51 @@ else
     end
 end
 
-using ArrayInterface
-import ArrayInterface: allowed_getindex, allowed_setindex!, aos_to_soa, buffer,
-                           parent_type, fast_matrix_colors, findstructralnz,
-                           has_sparsestruct,
-                           issingular, isstructured, matrix_colors, restructure,
-                           lu_instance,
-                           safevec, zeromatrix, undefmatrix, ColoringAlgorithm,
-                           fast_scalar_indexing, parameterless_type,
-                           is_forwarding_wrapper,
-                            map_tuple_type, flatten_tuples, GetIndex, SetIndex!,
-                           defines_strides, ndims_index, ndims_shape,
-                           stride_preserving_index
+using PrecompileTools
 
-# ArrayIndex subtypes and methods
-import ArrayInterface: ArrayIndex, MatrixIndex, VectorIndex, BidiagonalIndex,
-                           TridiagonalIndex
-# managing immutables
-import ArrayInterface: ismutable, can_change_size, can_setindex
-# constants
-import ArrayInterface: MatAdjTrans, VecAdjTrans, UpTri, LoTri
-# device pieces
-import ArrayInterface: AbstractDevice, AbstractCPU, CPUPointer, CPUTuple, CheckParent,
-                           CPUIndex, GPU, can_avx, device
+@recompile_invalidations begin
+    using ArrayInterface
+    import ArrayInterface: allowed_getindex, allowed_setindex!, aos_to_soa, buffer,
+                            parent_type, fast_matrix_colors, findstructralnz,
+                            has_sparsestruct,
+                            issingular, isstructured, matrix_colors, restructure,
+                            lu_instance,
+                            safevec, zeromatrix, undefmatrix, ColoringAlgorithm,
+                            fast_scalar_indexing, parameterless_type,
+                            is_forwarding_wrapper,
+                                map_tuple_type, flatten_tuples, GetIndex, SetIndex!,
+                            defines_strides, ndims_index, ndims_shape,
+                            stride_preserving_index
 
-using Static
-using Static: Zero, One, nstatic, eq, ne, gt, ge, lt, le, eachop, eachop_tuple,
-            permute, invariant_permutation, field_type, reduce_tup, find_first_eq,
-            OptionallyStaticUnitRange, OptionallyStaticStepRange, OptionallyStaticRange,
-            IntType,
-            SOneTo, SUnitRange
+    # ArrayIndex subtypes and methods
+    import ArrayInterface: ArrayIndex, MatrixIndex, VectorIndex, BidiagonalIndex,
+                            TridiagonalIndex
+    # managing immutables
+    import ArrayInterface: ismutable, can_change_size, can_setindex
+    # constants
+    import ArrayInterface: MatAdjTrans, VecAdjTrans, UpTri, LoTri
+    # device pieces
+    import ArrayInterface: AbstractDevice, AbstractCPU, CPUPointer, CPUTuple, CheckParent,
+                            CPUIndex, GPU, can_avx, device
 
-using IfElse
+    using Static
+    using Static: Zero, One, nstatic, eq, ne, gt, ge, lt, le, eachop, eachop_tuple,
+                permute, invariant_permutation, field_type, reduce_tup, find_first_eq,
+                OptionallyStaticUnitRange, OptionallyStaticStepRange, OptionallyStaticRange,
+                IntType,
+                SOneTo, SUnitRange
 
-using Base.Cartesian
-using Base: @propagate_inbounds, tail, OneTo, LogicalIndex, Slice, ReinterpretArray,
-            ReshapedArray, AbstractCartesianIndex
+    using IfElse
 
-using Base.Iterators: Pairs
-using LinearAlgebra
+    using Base.Cartesian
+    using Base: @propagate_inbounds, tail, OneTo, LogicalIndex, Slice, ReinterpretArray,
+                ReshapedArray, AbstractCartesianIndex
 
-import Compat
+    using Base.Iterators: Pairs
+    using LinearAlgebra
+
+    import Compat
+end
 
 """
     StrideIndex(x)
@@ -492,7 +496,6 @@ end
 
 ## Precompilation
 
-using PrecompileTools
 @setup_workload begin
     # Putting some things in `setup` can reduce the size of the
     # precompile file and potentially make loading faster.
