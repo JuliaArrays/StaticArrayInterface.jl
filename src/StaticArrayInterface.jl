@@ -486,7 +486,10 @@ include("indexing.jl")
 include("stridelayout.jl")
 include("broadcast.jl")
 
-import Requires
+@static if !isdefined(Base, :get_extension)
+    import Requires
+end
+
 @static if !isdefined(Base, :get_extension)
     function __init__()
         Requires.@require StaticArrays = "90137ffa-7385-5640-81b9-e52037218182" begin include("../ext/StaticArrayInterfaceStaticArraysExt.jl") end
