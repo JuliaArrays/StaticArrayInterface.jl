@@ -60,6 +60,18 @@ using PrecompileTools
     import Compat
 end
 
+using SciMLPublic: @public
+@public BroadcastAxis, LazyAxis, OptionallyStaticStepRange,
+OptionallyStaticUnitRange, SOneTo, SUnitRange, StrideIndex
+@public static_axes,
+axes_types, broadcast_axis, deleteat, dense_dims, from_parent_dims, getindex, indices,
+insert, static_length, lazy_axes, offset1, offsets, setindex!, static_size, static_strides,
+to_axes, to_axis, to_dims, to_index, static_to_indices, to_parent_dims, unsafe_reconstruct
+@public contiguous_axis, contiguous_axis_indicator, contiguous_batch_size, dimnames,
+has_dimnames, has_parent, is_column_major, is_lazy_conjugate,
+is_splat_index, known_dimnames, known_first, known_last, known_length,
+known_offset1, known_offsets, known_size, known_step, known_strides
+
 """
     StrideIndex(x)
 Subtype of `ArrayIndex` that transforms and index using stride layout information
