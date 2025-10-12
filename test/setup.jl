@@ -11,7 +11,6 @@ Base.IndexStyle(::Type{<:MArray}) = IndexLinear()
 StaticArrayInterface.static_axes(x::MArray) = StaticArrayInterface.static_axes(x.indices)
 Base.axes(x::MArray) = StaticArrayInterface.static_axes(x)
 StaticArrayInterface.axes_types(T::Type{<:MArray}) = T.parameters[3]
-StaticArrayInterface.static_axes(x::MArray) = StaticArrayInterface.static_axes(x.indices)
 StaticArrayInterface.defines_strides(::Type{<:MArray}) = true
 Base.strides(x::MArray) = strides(parent(x))
 function Base.getindex(x::MArray, inds...)
@@ -32,8 +31,6 @@ StaticArrayInterface.dimnames(x::NamedDimsWrapper) = getfield(x, :dimnames)
 function StaticArrayInterface.known_dimnames(::Type{T}) where {L,T<:NamedDimsWrapper{L}}
     Static.known(L)
 end
-
-Base.parent(x::NamedDimsWrapper) = x.parent
 
 # Dummy array type with undetermined contiguity properties
 struct DummyZeros{T,N} <: AbstractArray{T,N}
