@@ -46,7 +46,8 @@ using PrecompileTools
                 permute, invariant_permutation, field_type, reduce_tup, find_first_eq,
                 OptionallyStaticUnitRange, OptionallyStaticStepRange, OptionallyStaticRange,
                 IntType,
-                SOneTo, SUnitRange
+                SOneTo, SUnitRange,
+                static_first, static_last, static_step
 
     using IfElse
 
@@ -322,10 +323,6 @@ end
 @propagate_inbounds function Base.setindex!(A::AbstractArray2, val; kwargs...)
     return setindex!(A, val; kwargs...)
 end
-
-@inline static_first(x) = Static.maybe_static(known_first, first, x)
-@inline static_last(x) = Static.maybe_static(known_last, last, x)
-@inline static_step(x) = Static.maybe_static(known_step, step, x)
 
 @inline function _to_cartesian(a, i::IntType)
     @inbounds(CartesianIndices(ntuple(dim -> indices(a, dim), Val(ndims(a))))[i])
