@@ -19,34 +19,35 @@ using PrecompileTools
 @recompile_invalidations begin
     using ArrayInterface
     import ArrayInterface: allowed_getindex, allowed_setindex!, aos_to_soa, buffer,
-                            parent_type, fast_matrix_colors, findstructralnz,
-                            has_sparsestruct,
-                            issingular, isstructured, matrix_colors, restructure,
-                            lu_instance,
-                            safevec, zeromatrix, undefmatrix, ColoringAlgorithm,
-                            fast_scalar_indexing, parameterless_type,
-                            is_forwarding_wrapper,
-                                map_tuple_type, flatten_tuples, GetIndex, SetIndex!,
-                            defines_strides, ndims_index, ndims_shape,
-                            stride_preserving_index
+                           parent_type, fast_matrix_colors, findstructralnz,
+                           has_sparsestruct,
+                           issingular, isstructured, matrix_colors, restructure,
+                           lu_instance,
+                           safevec, zeromatrix, undefmatrix, ColoringAlgorithm,
+                           fast_scalar_indexing, parameterless_type,
+                           is_forwarding_wrapper,
+                           map_tuple_type, flatten_tuples, GetIndex, SetIndex!,
+                           defines_strides, ndims_index, ndims_shape,
+                           stride_preserving_index
 
     # ArrayIndex subtypes and methods
     import ArrayInterface: ArrayIndex, MatrixIndex, VectorIndex, BidiagonalIndex,
-                            TridiagonalIndex
+                           TridiagonalIndex
     # managing immutables
     import ArrayInterface: ismutable, can_change_size, can_setindex
     # constants
     import ArrayInterface: MatAdjTrans, VecAdjTrans, UpTri, LoTri
     # device pieces
     import ArrayInterface: AbstractDevice, AbstractCPU, CPUPointer, CPUTuple, CheckParent,
-                            CPUIndex, GPU, can_avx, device
+                           CPUIndex, GPU, can_avx, device
 
     using Static
     using Static: Zero, One, nstatic, eq, ne, gt, ge, lt, le, eachop, eachop_tuple,
-                permute, invariant_permutation, field_type, reduce_tup, find_first_eq,
-                OptionallyStaticUnitRange, OptionallyStaticStepRange, OptionallyStaticRange,
-                IntType,
-                SOneTo, SUnitRange
+                  permute, invariant_permutation, field_type, reduce_tup, find_first_eq,
+                  OptionallyStaticUnitRange, OptionallyStaticStepRange,
+                  OptionallyStaticRange,
+                  IntType,
+                  SOneTo, SUnitRange, static_first, static_step, static_last
 
     using IfElse
 
@@ -77,11 +78,11 @@ known_offset1, known_offsets, known_size, known_step, known_strides
 Subtype of `ArrayIndex` that transforms and index using stride layout information
 derived from `x`.
 """
-struct StrideIndex{N,R,C,S,O} <: ArrayIndex{N}
+struct StrideIndex{N, R, C, S, O} <: ArrayIndex{N}
     strides::S
     offsets::O
-    @inline function StrideIndex{N,R,C}(s::S, o::O) where {N,R,C,S,O}
-        return new{N,R::NTuple{N,Int},C,S,O}(s, o)
+    @inline function StrideIndex{N, R, C}(s::S, o::O) where {N, R, C, S, O}
+        return new{N, R::NTuple{N, Int}, C, S, O}(s, o)
     end
 end
 
@@ -89,14 +90,14 @@ end
     LazyAxis{N}(parent::AbstractArray)
 A lazy representation of `axes(parent, N)`.
 """
-struct LazyAxis{N,P} <: AbstractUnitRange{Int}
+struct LazyAxis{N, P} <: AbstractUnitRange{Int}
     parent::P
 
-    function LazyAxis{N}(parent::P) where {N,P}
-        N > 0 && return new{N::Int,P}(parent)
+    function LazyAxis{N}(parent::P) where {N, P}
+        N > 0 && return new{N::Int, P}(parent)
         throw_dim_error(parent, N)
     end
-    @inline LazyAxis{:}(parent::P) where {P} = new{ifelse(ndims(P) === 1, 1, :),P}(parent)
+    @inline LazyAxis{:}(parent::P) where {P} = new{ifelse(ndims(P) === 1, 1, :), P}(parent)
 end
 
 function throw_dim_error(@nospecialize(x), @nospecialize(dim))
@@ -111,9 +112,10 @@ An abstract trait that is used to determine how axes are combined when calling `
 """
 abstract type BroadcastAxis end
 
-@assume_effects :total function _find_first_true(isi::Tuple{Vararg{Union{Bool, Static.StaticBool}, N}}) where {N}
+@assume_effects :total function _find_first_true(isi::Tuple{Vararg{
+        Union{Bool, Static.StaticBool}, N}}) where {N}
     for i in 1:N
-        x = getfield(isi, i) 
+        x = getfield(isi, i)
         if (x isa Bool && x === true) || x isa Static.True
             return i
         end
@@ -235,7 +237,8 @@ struct IndicesInfo{Np, pdims, cdims, Nc}
     IndicesInfo(x::SubArray) = IndicesInfo{ndims(parent(x))}(typeof(x.indices))
 end
 
-@inline function _map_splats(nsplat::Int, splat_index::Int, dims::Tuple{Vararg{Union{Int,StaticInt}}})
+@inline function _map_splats(nsplat::Int, splat_index::Int, dims::Tuple{Vararg{Union{
+        Int, StaticInt}}})
     ntuple(length(dims)) do i
         i === splat_index ? (nsplat * getfield(dims, i)) : getfield(dims, i)
     end
@@ -323,9 +326,9 @@ end
     return setindex!(A, val; kwargs...)
 end
 
-@inline static_first(x) = Static.maybe_static(known_first, first, x)
-@inline static_last(x) = Static.maybe_static(known_last, last, x)
-@inline static_step(x) = Static.maybe_static(known_step, step, x)
+@inline Static.static_first(x::AbstractArray) = Static.maybe_static(known_first, first, x)
+@inline Static.static_last(x::AbstractArray) = Static.maybe_static(known_last, last, x)
+@inline Static.static_step(x::AbstractArray) = Static.maybe_static(known_step, step, x)
 
 @inline function _to_cartesian(a, i::IntType)
     @inbounds(CartesianIndices(ntuple(dim -> indices(a, dim), Val(ndims(a))))[i])
@@ -434,7 +437,7 @@ Base.@propagate_inbounds function deleteat(collection::AbstractVector, index)
     return unsafe_deleteat(collection, index)
 end
 Base.@propagate_inbounds function deleteat(collection::Tuple{Vararg{Any, N}},
-                                           index) where {N}
+        index) where {N}
     @boundscheck if !checkindex(Bool, StaticInt{1}():StaticInt{N}(), index)
         throw(BoundsError(collection, index))
     end
@@ -504,11 +507,13 @@ include("broadcast.jl")
     # Putting some things in `setup` can reduce the size of the
     # precompile file and potentially make loading faster.
     arrays = [rand(4), Base.oneto(5)]
-    @compile_workload begin for x in arrays
-        known_first(x)
-        known_step(x)
-        known_last(x)
-    end end
+    @compile_workload begin
+        for x in arrays
+            known_first(x)
+            known_step(x)
+            known_last(x)
+        end
+    end
 end
 
 end
