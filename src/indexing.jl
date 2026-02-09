@@ -69,7 +69,14 @@ end
 @inline (ima::IndexedMappedArray{A})(idx::I, d::StaticInt{D}) where {A,I,D} = to_index(lazy_axes(ima.a, d), idx)
 @inline function (ima::IndexedMappedArray{A})(idx::AbstractArray{Bool}, dims::Tuple) where {A}
     if (last(dims) == ndims(A)) && (IndexStyle(A) isa IndexLinear)
-        return LogicalIndex{Int}(idx)
+        # Match Base.to_indices behavior for trailing boolean arrays.
+        # Julia >= 1.12 uses LogicalIndex(idx) which gives CartesianIndex{N} for N-D booleans.
+        # Julia < 1.12 uses LogicalIndex{Int}(idx) which gives linear indices.
+        @static if VERSION >= v"1.12-"
+            return LogicalIndex(idx)
+        else
+            return LogicalIndex{Int}(idx)
+        end
     else
         return LogicalIndex(idx)
     end
