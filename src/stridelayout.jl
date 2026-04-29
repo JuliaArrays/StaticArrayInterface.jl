@@ -428,14 +428,14 @@ function dense_dims(@nospecialize T::Type{<:Base.ReshapedArray})
     d = dense_dims(parent_type(T))
     if d === nothing
         return nothing
-    elseif all(d)
+    elseif all(Bool, d)
         return ntuple(Compat.Returns(True()), StaticInt(ndims(T)))
     else
         return ntuple(Compat.Returns(False()), StaticInt(ndims(T)))
     end
 end
 
-is_dense(A) = all(dense_dims(A)) ? True() : False()
+is_dense(A) = all(Bool, dense_dims(A)) ? True() : False()
 
 """
     known_strides(::Type{T}) -> Tuple
